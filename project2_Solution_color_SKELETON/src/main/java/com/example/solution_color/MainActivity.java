@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     private final int REQUEST_IMAGE_CAPTURE = 2;
     private final int PERMISSION_READ_EXTERNAL = 3;
     private final int PERMISSION_WRITE_EXTERNAL = 4;
+    private final int PERMISSION_REQUEST_CODE = 5;
 
     private int PERMISSION_ALL = 1;
     private String[] PERMISSIONS = {
@@ -103,13 +104,12 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (!verifyPermissions(this, PERMISSIONS)) {
-            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-        }
+
         // be sure to set up the appbar in the activity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        myImage = (ImageView) findViewById(R.id.imageView1);
         //dont display these
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -118,21 +118,18 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
             @Override
             public void onClick(View view) {
                 // manage this, mindful of permissions
-                doTakePicture();
+                MainActivity.this.doTakePicture();
             }
 
         });
 
         //get the default image
-        myImage = (ImageView) findViewById(R.id.imageView1);
+
 
 
         // TODO manage the preferences and the shared preference listenes
         // TODO and get the values already there getPrefValues(settings);
         // TODO use getPrefValues(SharedPreferences settings)
-
-
-
 
         // Fetch screen height and width,
         DisplayMetrics metrics = this.getResources().getDisplayMetrics();
@@ -188,8 +185,8 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
 
     private void setUpFileSystem() throws IOException {
-        //TODO do we have needed permissions?
-        //TODO if not then dont proceed
+        // do we have needed permissions?
+        // if not then dont proceed
         if (!verifyPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
             return;
@@ -216,8 +213,10 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         try {
             File[] storageDir = getExternalMediaDirs();
             File imagefile = new File(storageDir[0], fn);
-            if (!storageDir[0].mkdirs()) {
-                return null;
+            if (!storageDir[0].exists()) {
+                if (!storageDir[0].mkdirs()) {
+                    return null;
+                }
             }
             imagefile.createNewFile();
             originalImagePath = imagefile.getAbsolutePath();
@@ -240,21 +239,16 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     @Override
     public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults) {
         // BEGIN_INCLUDE(onRequestPermissionsResult)
-        if (permsRequestCode == PERMISSION_REQUEST_CAMERA) {
-            // Request for camera permission.
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission has been granted. Start camera preview Activity.
-                Snackbar.make(myImage, R.string.camera_permission_granted,
-                        Snackbar.LENGTH_SHORT)
-                        .show();
-            } else {
-                // Permission request was denied.
-                Snackbar.make(myImage, R.string.camera_permission_denied,
-                        Snackbar.LENGTH_SHORT)
-                        .show();
+        boolean counter = true;
+        switch (permsRequestCode) {
+            case PERMISSION_REQUEST_CODE:
+                for (int result : grantResults) {
+                    counter = counter && (result == PackageManager.PERMISSION_GRANTED);
+                }
+                break;
             }
-
-            //LAUNCH CAMERA
+            if (counter) {
+                doTakePicture();
         }
         // END_INCLUDE(onRequestPermissionsResult)
     }
@@ -267,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
      */
     private boolean verifyPermissions(Context context, String... permissions) {
 
-        //TODO fill in
+        // fill in
 
         if (context != null && permissions != null) {
             for (String permission : permissions) {
@@ -322,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
      * delete original and processed images, then rescan media paths to pick up that they are gone.
      */
     private void doReset() {
-        //TODO verify that app has permission to use file system
+        // verify that app has permission to use file system
         //do we have needed permissions?
         if (!verifyPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
@@ -347,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     }
 
     public void doSketch() {
-        //TODO verify that app has permission to use file system
+        // verify that app has permission to use file system
         //do we have needed permissions?
         if (!verifyPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
@@ -370,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     }
 
     public void doColorize() {
-        //TODO verify that app has permission to use file system
+        // verify that app has permission to use file system
         //do we have needed permissions?
         if (!verifyPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
@@ -404,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     }
 
     public void doShare() {
-        //TODO verify that app has permission to use file system
+        //verify that app has permission to use file system
         //do we have needed permissions?
         if (!verifyPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
