@@ -4,12 +4,12 @@
         "source": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\src\\main\\res\\drawable\\gutters.png"
     },
     {
-        "merged": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi_ic_launcher.png.flat",
-        "source": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\src\\main\\res\\drawable-mdpi\\ic_launcher.png"
-    },
-    {
         "merged": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher_foreground.png.flat",
         "source": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\src\\main\\res\\drawable-mdpi\\ic_launcher.png"
     },
     {
         "merged": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\build\\intermediates\\res\\merged\\debug\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
@@ -68,28 +68,28 @@
         "source": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher_round.png"
     },
     {
-        "merged": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\build\\intermediates\\res\\merged\\debug\\xml_file_paths.xml.flat",
-        "source": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\src\\main\\res\\xml\\file_paths.xml"
-    },
-    {
         "merged": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi_ic_launcher_foreground.png.flat",
         "source": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\src\\main\\res\\mipmap-xhdpi\\ic_launcher_foreground.png"
     },
     {
-        "merged": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_ic_launcher.png.flat",
-        "source": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\src\\main\\res\\drawable-hdpi\\ic_launcher.png"
+        "merged": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\build\\intermediates\\res\\merged\\debug\\xml_file_paths.xml.flat",
+        "source": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\src\\main\\res\\xml\\file_paths.xml"
     },
     {
         "merged": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\build\\intermediates\\res\\merged\\debug\\drawable_ic_launcher_background.xml.flat",
         "source": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\src\\main\\res\\drawable\\ic_launcher_background.xml"
     },
     {
-        "merged": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi_ic_launcher.png.flat",
-        "source": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\src\\main\\res\\drawable-xxhdpi\\ic_launcher.png"
+        "merged": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\src\\main\\res\\drawable-hdpi\\ic_launcher.png"
     },
     {
         "merged": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\build\\intermediates\\res\\merged\\debug\\mipmap-anydpi-v26_ic_launcher.xml.flat",
         "source": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\src\\main\\res\\mipmap-anydpi-v26\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\src\\main\\res\\drawable-xxhdpi\\ic_launcher.png"
     },
     {
         "merged": "C:\\Users\\adams\\StudioProjects\\Project2_Solution_color_Appbar_SKELETON\\project2_Solution_color_SKELETON\\build\\intermediates\\res\\merged\\debug\\layout_settings_activity.xml.flat",

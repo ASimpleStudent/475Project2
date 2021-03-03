@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -60,8 +61,13 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     //preferences
     private int saturation = DEFAULT_COLOR_PERCENT;
     private int bwPercent = DEFAULT_BW_PERCENT;
+    private EditText etSaturation;
+    private EditText etBwPercent;
+    private EditText etShareSubject;
+    private EditText etShareText;
     private String shareSubject;
     private String shareText;
+    private String FILENAME = "R.xml.permissions";
 
     //where images go
     private String originalImagePath;   //where orig image is
@@ -95,9 +101,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
 
 
-    private SharedPreferences myPreference;
-    private SharedPreferences.OnSharedPreferenceChangeListener listener = null;
-    private boolean enablePreferenceListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         // be sure to set up the appbar in the activity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        //get the default image
         myImage = (ImageView) findViewById(R.id.imageView1);
         //dont display these
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -123,13 +127,24 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
         });
 
-        //get the default image
-
-
-
         // TODO manage the preferences and the shared preference listenes
         // TODO and get the values already there getPrefValues(settings);
         // TODO use getPrefValues(SharedPreferences settings)
+
+        loadprefs();
+//        if(myPreference == null) {
+//            myPreference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//        }
+//
+//        if(listener == null) {
+//            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+//                @Override
+//                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+//                    getPrefValues(myPreference);
+//                    Toast.makeText(MainActivity.this, "Handle change of Key=" + key, Toast.LENGTH_SHORT).show();
+//                }
+//            };
+//        }
 
         // Fetch screen height and width,
         DisplayMetrics metrics = this.getResources().getDisplayMetrics();
@@ -169,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     //TODO use this to set the following member preferences whenever preferences are changed.
     //TODO Please ensure that this function is called by your preference change listener
     private void getPrefValues(SharedPreferences settings) {
-        //TODO should track shareSubject, shareText, saturation, bwPercent
+        // should track shareSubject, shareText, saturation, bwPercent
         shareSubject = settings.getString(String.valueOf(R.string.shareTitle), null);
         shareText = settings.getString(String.valueOf(R.string.sharemessage), null);
         saturation = settings.getInt(String.valueOf(R.integer.saturation), 0);
@@ -187,10 +202,10 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     private void setUpFileSystem() throws IOException {
         // do we have needed permissions?
         // if not then dont proceed
-        if (!verifyPermissions(this, PERMISSIONS)) {
-            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-            return;
-        }
+//        if (!verifyPermissions(this, PERMISSIONS)) {
+//            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+//            return;
+//        }
         //get some paths
         // Create the File where the photo should go
         File photoFile = createImageFile(ORIGINAL_FILE);
@@ -239,18 +254,17 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     @Override
     public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults) {
         // BEGIN_INCLUDE(onRequestPermissionsResult)
-        boolean counter = true;
-        switch (permsRequestCode) {
-            case PERMISSION_REQUEST_CODE:
-                for (int result : grantResults) {
-                    counter = counter && (result == PackageManager.PERMISSION_GRANTED);
-                }
-                break;
-            }
-            if (counter) {
-                doTakePicture();
-        }
-        // END_INCLUDE(onRequestPermissionsResult)
+//        boolean counter = true;
+//        switch (permsRequestCode) {
+//            case PERMISSION_REQUEST_CODE:
+//                for (int result : grantResults) {
+//                    counter = counter && (result == PackageManager.PERMISSION_GRANTED);
+//                }
+//                break;
+//            }
+//
+//
+//        // END_INCLUDE(onRequestPermissionsResult)
     }
 
 
@@ -260,9 +274,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
      * these permissions.  Note this is coarse in that I assumme I need them all
      */
     private boolean verifyPermissions(Context context, String... permissions) {
-
         // fill in
-
         if (context != null && permissions != null) {
             for (String permission : permissions) {
                 if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -427,7 +439,8 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
         switch (id) {
             case R.id.settings:
-                Toast.makeText(this, "settings goes here", Toast.LENGTH_SHORT).show();
+                Intent myintent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(myintent);
                 break;
             case R.id.reset:
                 doReset();
@@ -451,7 +464,23 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     @Override
     public void onSharedPreferenceChanged(SharedPreferences arg0, String arg1) {
         //TODO reload prefs at this point
+        getPrefValues(arg0);
+
     }
+    private void loadprefs() {
+        SharedPreferences myPrefs = getSharedPreferences(FILENAME,MODE_PRIVATE);
+
+        getPrefValues(myPrefs);
+
+
+        etShareSubject.setText(shareSubject);
+        etShareText.setText(shareText);
+        etSaturation.setText(Integer.toString(saturation));
+        etBwPercent.setText(Integer.toString(bwPercent));
+
+    }
+
+
 
     /**
      * Notifies the OS to index the new image, so it shows up in Gallery.
