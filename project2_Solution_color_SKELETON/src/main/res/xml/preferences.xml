@@ -12,7 +12,7 @@
         android:title="Rendering Options" android:summary="Level of sketchiness and color saturation">
         <SeekBarPreference  app:title="Sketchiness" app:key="sketch" app:summary="Set BW threshold, higher numbers correspond to less detail and a whiter image" app:min="0" android:max="100"
             app:defaultValue="15" app:enabled="true" app:showSeekBarValue="true"/>
-        <SeekBarPreference  app:title="Sketchiness" app:key="satbar" app:summary="Set color saturation, higher numbers correspond to more colorful images" app:min="0" android:max="100"
+        <SeekBarPreference  app:title="Saturation" app:key="satbar" app:summary="Set color saturation, higher numbers correspond to more colorful images" app:min="0" android:max="100"
             app:defaultValue="15" app:enabled="true" app:showSeekBarValue="true"/>
     </PreferenceCategory>
 </PreferenceScreen>

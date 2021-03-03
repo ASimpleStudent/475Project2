@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     private static final String DEBUG_TAG = "CartoonActivity";
     private static final String ORIGINAL_FILE = "origfile.png";
     private static final String PROCESSED_FILE = "procfile.png";
+    private static final String PREFERENCE_FILE = "R.xml.preferences";
 
     private static final int TAKE_PICTURE = 1;
     private static final double SCALE_FROM_0_TO_255 = 2.55;
@@ -61,13 +62,10 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     //preferences
     private int saturation = DEFAULT_COLOR_PERCENT;
     private int bwPercent = DEFAULT_BW_PERCENT;
-    private EditText etSaturation;
-    private EditText etBwPercent;
-    private EditText etShareSubject;
-    private EditText etShareText;
+
     private String shareSubject;
     private String shareText;
-    private String FILENAME = "R.xml.permissions";
+    private SharedPreferences.OnSharedPreferenceChangeListener listener;
 
     //where images go
     private String originalImagePath;   //where orig image is
@@ -117,6 +115,10 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         //dont display these
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        if (!verifyPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+
         FloatingActionButton fab = findViewById(R.id.buttonTakePicture);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,24 +129,16 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
         });
 
-        // TODO manage the preferences and the shared preference listenes
-        // TODO and get the values already there getPrefValues(settings);
-        // TODO use getPrefValues(SharedPreferences settings)
+        //  manage the preferences and the shared preference listenes
+        //  and get the values already there getPrefValues(settings);
+        //  use getPrefValues(SharedPreferences settings)
+        // Sat, BW, ShareSub, ShareText
 
-        loadprefs();
-//        if(myPreference == null) {
-//            myPreference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//        }
-//
-//        if(listener == null) {
-//            listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-//                @Override
-//                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-//                    getPrefValues(myPreference);
-//                    Toast.makeText(MainActivity.this, "Handle change of Key=" + key, Toast.LENGTH_SHORT).show();
-//                }
-//            };
-//        }
+        SharedPreferences prefs = getSharedPreferences(PREFERENCE_FILE, MODE_PRIVATE);
+
+        prefs.registerOnSharedPreferenceChangeListener(this);
+
+        //editor.commit();
 
         // Fetch screen height and width,
         DisplayMetrics metrics = this.getResources().getDisplayMetrics();
@@ -185,10 +179,10 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     //TODO Please ensure that this function is called by your preference change listener
     private void getPrefValues(SharedPreferences settings) {
         // should track shareSubject, shareText, saturation, bwPercent
-        shareSubject = settings.getString(String.valueOf(R.string.shareTitle), null);
-        shareText = settings.getString(String.valueOf(R.string.sharemessage), null);
-        saturation = settings.getInt(String.valueOf(R.integer.saturation), 0);
-        bwPercent = settings.getInt(String.valueOf(R.integer.bwPercent), 0);
+        shareSubject = settings.getString(Integer.toString(R.string.SUBJECT_KEY), null);
+        shareText = settings.getString(Integer.toString(R.string.TEXT_KEY), null);
+        saturation = settings.getInt(Integer.toString(R.string.SAT_KEY), 0);
+        bwPercent = settings.getInt(Integer.toString(R.string.SKETCH_KEY), 0);
     }
 
     @Override
@@ -222,8 +216,8 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         setImage();
     }
 
-    //TODO manage creating a file to store camera image in
-    //TODO where photo is stored
+    // manage creating a file to store camera image in
+    // where photo is stored
     private File createImageFile(final String fn) {
         try {
             File[] storageDir = getExternalMediaDirs();
@@ -285,8 +279,6 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         return true;
     }
 
-
-
     //take a picture and store it on external storage
     public void doTakePicture() {
         // verify that app has permission to use camera
@@ -294,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
             return;
         }
-        //TODO manage launching intent to take a picture
+        // manage launching intent to take a picture
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -307,8 +299,8 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         }
     }
 
-    //TODO manage return from camera and other activities
-    // TODO handle edge cases as well (no pic taken)
+    // manage return from camera and other activities
+    //  handle edge cases as well (no pic taken)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -318,9 +310,9 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
             scanSavedMediaFile(originalImagePath);
         }
 
-        //TODO set the myImage equal to the camera image returned
-        //TODO tell scanner to pic up this unaltered image
-        //TODO save anything needed for later
+        // set the myImage equal to the camera image returned
+        // tell scanner to pic up this unaltered image
+        // save anything needed for later
 
     }
 
@@ -420,14 +412,14 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.setData(outputFileUri);
-        shareIntent.setType("image/png");
+        shareIntent.setType("image");
         shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
         startActivity(Intent.createChooser(shareIntent, "Share"));
 
 
-        //TODO share the processed image with appropriate subject, text and file URI
-        //TODO the subject and text should come from the preferences set in the Settings Activity
+        // share the processed image with appropriate subject, text and file URI
+        // the subject and text should come from the preferences set in the Settings Activity
 
     }
 
@@ -460,27 +452,12 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         return true;
     }
 
-    //TODO set up pref changes
+    // set up pref changes
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences arg0, String arg1) {
-        //TODO reload prefs at this point
-        getPrefValues(arg0);
+    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+        getPrefValues(prefs);
 
     }
-    private void loadprefs() {
-        SharedPreferences myPrefs = getSharedPreferences(FILENAME,MODE_PRIVATE);
-
-        getPrefValues(myPrefs);
-
-
-        etShareSubject.setText(shareSubject);
-        etShareText.setText(shareText);
-        etSaturation.setText(Integer.toString(saturation));
-        etBwPercent.setText(Integer.toString(bwPercent));
-
-    }
-
-
 
     /**
      * Notifies the OS to index the new image, so it shows up in Gallery.

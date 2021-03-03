@@ -8,6 +8,10 @@
     <string name="camera_permission_available">Camera permission is available. </string>
     <string name="camera_permission_granted">Camera permission was granted.</string>
     <string name="camera_permission_denied">Camera permission request was denied.</string>
+    <string name="SUBJECT_KEY">share_subject</string>
+    <string name="TEXT_KEY">share_text</string>
+    <string name="SKETCH_KEY">sketch</string>
+    <string name="SAT_KEY">satbar</string>
     <integer name="saturation"> 0 </integer>
     <integer name="bwPercent"> 0 </integer>
 
