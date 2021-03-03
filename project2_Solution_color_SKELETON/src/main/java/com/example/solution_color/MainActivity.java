@@ -307,19 +307,10 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //TODO get photo
-//        switch (requestCode) {
-//            case (TAKE_PICTURE):
-//                doTakePicture();
-//
-//                //tell scanner to pic up this image
-//                scanSavedMediaFile(originalImagePath);
-//
-//                break;
-//            case(ID_DO_EXPLICIT_BARCODE_ZXING):
-//            case (ID_DO_IMPLICIT_BARCODE ):
-//                doBarcodeResults(resultCode,data);
-//                break;
-//        }
+        if (requestCode == TAKE_PICTURE && resultCode == RESULT_OK) {
+            setImage();
+            scanSavedMediaFile(originalImagePath);
+        }
 
         //TODO set the myImage equal to the camera image returned
         //TODO tell scanner to pic up this unaltered image
@@ -420,6 +411,15 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
             return;
         }
 
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.setData(outputFileUri);
+        shareIntent.setType("image/png");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
+        startActivity(Intent.createChooser(shareIntent, "Share"));
+
+
         //TODO share the processed image with appropriate subject, text and file URI
         //TODO the subject and text should come from the preferences set in the Settings Activity
 
@@ -434,24 +434,22 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         switch (id) {
             case R.id.settings:
                 Toast.makeText(this, "settings goes here", Toast.LENGTH_SHORT).show();
-                return true;
+                break;
             case R.id.reset:
                 doReset();
-                return true;
+                break;
             case R.id.share:
                 doShare();
-                return true;
+                break;
             case R.id.sketchy:
                 doSketch();
-                return true;
+                break;
             case R.id.colorize:
                 doColorize();
-                return true;
+                break;
             default:
-                super.onOptionsItemSelected(item);
                 break;
         }
-
         return true;
     }
 
