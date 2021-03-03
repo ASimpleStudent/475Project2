@@ -2,10 +2,13 @@ package com.example.solution_color;
 
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import androidx.preference.PreferenceManager;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -14,6 +17,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.os.Environment;
 import android.provider.MediaStore;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -35,7 +39,11 @@ import com.library.bitmap_utilities.BitMap_Helpers;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+
+
 
 public class MainActivity extends AppCompatActivity implements OnSharedPreferenceChangeListener {
 
@@ -72,13 +80,35 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     Bitmap bmpThresholdedColor;         //the colorized version of the black and white image
 
     //TODO manage all the permissions you need
+    private final int PERMISSION_REQUEST_CAMERA = 1;
+    private final int REQUEST_IMAGE_CAPTURE = 2;
+    private final int PERMISSION_READ_EXTERNAL = 3;
+    private final int PERMISSION_WRITE_EXTERNAL = 4;
+
+    private int PERMISSION_ALL = 1;
+    private String[] PERMISSIONS = {
+            android.Manifest.permission.CAMERA,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+
+
+    private SharedPreferences myPreference;
+    private SharedPreferences.OnSharedPreferenceChangeListener listener = null;
+    private boolean enablePreferenceListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //TODO be sure to set up the appbar in the activity
+        if (!verifyPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+        // be sure to set up the appbar in the activity
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         //dont display these
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -87,25 +117,33 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO manage this, mindful of permissions
-
+                // manage this, mindful of permissions
+                doTakePicture();
             }
+
         });
 
         //get the default image
         myImage = (ImageView) findViewById(R.id.imageView1);
 
 
-        //TODO manage the preferences and the shared preference listenes
+        // TODO manage the preferences and the shared preference listenes
         // TODO and get the values already there getPrefValues(settings);
-        //TODO use getPrefValues(SharedPreferences settings)
+        // TODO use getPrefValues(SharedPreferences settings)
+
+
+
 
         // Fetch screen height and width,
         DisplayMetrics metrics = this.getResources().getDisplayMetrics();
         screenheight = metrics.heightPixels;
         screenwidth = metrics.widthPixels;
 
-        setUpFileSystem();
+        try {
+            setUpFileSystem();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setImage() {
@@ -135,6 +173,10 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     //TODO Please ensure that this function is called by your preference change listener
     private void getPrefValues(SharedPreferences settings) {
         //TODO should track shareSubject, shareText, saturation, bwPercent
+        shareSubject = settings.getString(String.valueOf(R.string.shareTitle), null);
+        shareText = settings.getString(String.valueOf(R.string.sharemessage), null);
+        saturation = settings.getInt(String.valueOf(R.integer.saturation), 0);
+        bwPercent = settings.getInt(String.valueOf(R.integer.bwPercent), 0);
     }
 
     @Override
@@ -145,10 +187,13 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     }
 
 
-    private void setUpFileSystem(){
+    private void setUpFileSystem() throws IOException {
         //TODO do we have needed permissions?
         //TODO if not then dont proceed
-
+        if (!verifyPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+            return;
+        }
         //get some paths
         // Create the File where the photo should go
         File photoFile = createImageFile(ORIGINAL_FILE);
@@ -168,8 +213,18 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     //TODO manage creating a file to store camera image in
     //TODO where photo is stored
     private File createImageFile(final String fn) {
-        //TODO fill in
-        return null;
+        try {
+            File[] storageDir = getExternalMediaDirs();
+            File imagefile = new File(storageDir[0], fn);
+            if (!storageDir[0].mkdirs()) {
+                return null;
+            }
+            imagefile.createNewFile();
+            originalImagePath = imagefile.getAbsolutePath();
+            return imagefile;
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     //DUMP for students
@@ -184,28 +239,66 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
      */
     @Override
     public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults) {
-        //TODO fill in
+        // BEGIN_INCLUDE(onRequestPermissionsResult)
+        if (permsRequestCode == PERMISSION_REQUEST_CAMERA) {
+            // Request for camera permission.
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission has been granted. Start camera preview Activity.
+                Snackbar.make(myImage, R.string.camera_permission_granted,
+                        Snackbar.LENGTH_SHORT)
+                        .show();
+            } else {
+                // Permission request was denied.
+                Snackbar.make(myImage, R.string.camera_permission_denied,
+                        Snackbar.LENGTH_SHORT)
+                        .show();
+            }
+
+            //LAUNCH CAMERA
+        }
+        // END_INCLUDE(onRequestPermissionsResult)
     }
+
 
     //DUMP for students
     /**
      * Verify that the specific list of permisions requested have been granted, otherwise ask for
      * these permissions.  Note this is coarse in that I assumme I need them all
      */
-    private boolean verifyPermissions() {
+    private boolean verifyPermissions(Context context, String... permissions) {
 
         //TODO fill in
 
-        //and return false until they are granted
-        return false;
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
+
+
 
     //take a picture and store it on external storage
     public void doTakePicture() {
-        //TODO verify that app has permission to use camera
-
+        // verify that app has permission to use camera
+        if (!verifyPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+            return;
+        }
         //TODO manage launching intent to take a picture
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = createImageFile(ORIGINAL_FILE);
+            if ( photoFile != null) {
+                outputFileUri = FileProvider.getUriForFile(this, "com.example.solution_color.fileprovider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+                startActivityForResult(takePictureIntent, TAKE_PICTURE);
+            }
+        }
     }
 
     //TODO manage return from camera and other activities
@@ -214,6 +307,20 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //TODO get photo
+//        switch (requestCode) {
+//            case (TAKE_PICTURE):
+//                doTakePicture();
+//
+//                //tell scanner to pic up this image
+//                scanSavedMediaFile(originalImagePath);
+//
+//                break;
+//            case(ID_DO_EXPLICIT_BARCODE_ZXING):
+//            case (ID_DO_IMPLICIT_BARCODE ):
+//                doBarcodeResults(resultCode,data);
+//                break;
+//        }
+
         //TODO set the myImage equal to the camera image returned
         //TODO tell scanner to pic up this unaltered image
         //TODO save anything needed for later
@@ -226,7 +333,8 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     private void doReset() {
         //TODO verify that app has permission to use file system
         //do we have needed permissions?
-        if (!verifyPermissions()) {
+        if (!verifyPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
             return;
         }
         //delete the files
@@ -250,7 +358,8 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     public void doSketch() {
         //TODO verify that app has permission to use file system
         //do we have needed permissions?
-        if (!verifyPermissions()) {
+        if (!verifyPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
             return;
         }
 
@@ -272,7 +381,8 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     public void doColorize() {
         //TODO verify that app has permission to use file system
         //do we have needed permissions?
-        if (!verifyPermissions()) {
+        if (!verifyPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
             return;
         }
 
@@ -305,7 +415,8 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     public void doShare() {
         //TODO verify that app has permission to use file system
         //do we have needed permissions?
-        if (!verifyPermissions()) {
+        if (!verifyPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
             return;
         }
 
@@ -314,10 +425,32 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
     }
 
-    //TODO set this up
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        //TODO handle all of the appbar button clicks
+        // handle all of the appbar button clicks
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.settings:
+                Toast.makeText(this, "settings goes here", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.reset:
+                doReset();
+                return true;
+            case R.id.share:
+                doShare();
+                return true;
+            case R.id.sketchy:
+                doSketch();
+                return true;
+            case R.id.colorize:
+                doColorize();
+                return true;
+            default:
+                super.onOptionsItemSelected(item);
+                break;
+        }
 
         return true;
     }

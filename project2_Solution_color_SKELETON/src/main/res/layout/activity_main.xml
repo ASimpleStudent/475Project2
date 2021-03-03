@@ -8,7 +8,7 @@
     android:scaleType="fitXY"
     app:elevation="1dp">
 
-<!--    TODO add an appbar layout-->
+<!--    add an appbar layout-->
     <!--  changed from android:background="?attr/colorPrimary" to whats below to make translucent
           change to android:background="@android:color/transparent" to make transparent-->
     <com.google.android.material.appbar.AppBarLayout
@@ -24,10 +24,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-
-
-            />
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 

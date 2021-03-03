@@ -1,0 +1,11 @@
+com/example/solution_color/SettingsActivity.java
+ com.example.solution_color.SettingsActivity
+ com.example.solution_color.SettingsActivity$SettingsFragment
+com/example/solution_color/BuildConfig.java
+ com.example.solution_color.BuildConfig
+com/example/solution_color/Camera_Helpers.java
+ com.example.solution_color.Camera_Helpers
+com/example/solution_color/MainActivity.java
+ com.example.solution_color.MainActivity
+ com.example.solution_color.MainActivity$1
+ com.example.solution_color.MainActivity$2

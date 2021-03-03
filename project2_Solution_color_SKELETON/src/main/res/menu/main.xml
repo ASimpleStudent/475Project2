@@ -1,5 +1,36 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-<!--TODO fill these in-->
+    <item
+        android:title="Reset"
+        android:id="@+id/reset"
+        android:icon="@android:drawable/ic_menu_revert"
+        android:orderInCategory="1"
+        android:visible="true"
+        app:showAsAction="always"></item>
+    <item
+        android:title="Sketchy"
+        android:id="@+id/sketchy"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:orderInCategory="1"
+        android:visible="true"
+        app:showAsAction="always"></item>
+    <item
+        android:title="Colorize"
+        android:id="@+id/colorize"
+        android:icon="@android:drawable/ic_menu_view"
+        android:orderInCategory="1"
+        android:visible="true"
+        app:showAsAction="always"></item>
+    <item
+        android:title="Share"
+        android:id="@+id/share"
+        android:icon="@android:drawable/ic_menu_share"
+        android:orderInCategory="300"
+        android:visible="true"
+        app:showAsAction="always"></item>
+    <item
+        android:id="@+id/settings"
+        android:orderInCategory="400"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
 </menu>

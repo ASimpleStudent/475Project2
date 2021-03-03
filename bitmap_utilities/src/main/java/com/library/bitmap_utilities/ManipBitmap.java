@@ -395,7 +395,7 @@ public class ManipBitmap {
             base.copyPixelsFromBuffer(buffOut);
 
         } catch (Exception e) {
-            // TODO: handle exception
+            // handle exception
         }
 
         return base;

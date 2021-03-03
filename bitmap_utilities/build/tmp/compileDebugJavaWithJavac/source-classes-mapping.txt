@@ -1,0 +1,8 @@
+com/library/bitmap_utilities/BuildConfig.java
+ com.library.bitmap_utilities.BuildConfig
+com/library/bitmap_utilities/BlurBuilder.java
+ com.library.bitmap_utilities.BlurBuilder
+com/library/bitmap_utilities/ManipBitmap.java
+ com.library.bitmap_utilities.ManipBitmap
+com/library/bitmap_utilities/BitMap_Helpers.java
+ com.library.bitmap_utilities.BitMap_Helpers
