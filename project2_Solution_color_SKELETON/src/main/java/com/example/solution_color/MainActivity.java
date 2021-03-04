@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     Bitmap bmpThresholded;              //the black and white version of original image
     Bitmap bmpThresholdedColor;         //the colorized version of the black and white image
 
-    //TODO manage all the permissions you need
+    // manage all the permissions you need
     private final int PERMISSION_REQUEST_CAMERA = 1;
     private final int REQUEST_IMAGE_CAPTURE = 2;
     private final int PERMISSION_READ_EXTERNAL = 3;
@@ -117,7 +117,9 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
         if (!verifyPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+
         }
+
 
         FloatingActionButton fab = findViewById(R.id.buttonTakePicture);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -145,11 +147,16 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         screenheight = metrics.heightPixels;
         screenwidth = metrics.widthPixels;
 
-        try {
-            setUpFileSystem();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+            try {
+                setUpFileSystem();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+
+
     }
 
     private void setImage() {
@@ -175,8 +182,8 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         Log.d(DEBUG_TAG, "setImage: bmpOriginal copied");
     }
 
-    //TODO use this to set the following member preferences whenever preferences are changed.
-    //TODO Please ensure that this function is called by your preference change listener
+    // use this to set the following member preferences whenever preferences are changed.
+    // Please ensure that this function is called by your preference change listener
     private void getPrefValues(SharedPreferences settings) {
         // should track shareSubject, shareText, saturation, bwPercent
         shareSubject = settings.getString(Integer.toString(R.string.SUBJECT_KEY), null);
@@ -196,8 +203,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     private void setUpFileSystem() throws IOException {
         // do we have needed permissions?
         // if not then dont proceed
-//        if (!verifyPermissions(this, PERMISSIONS)) {
-//            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+//        if (!verifyPermissions(this, PERMISSIONS )) {
 //            return;
 //        }
         //get some paths
@@ -228,7 +234,6 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
                 }
             }
             imagefile.createNewFile();
-            originalImagePath = imagefile.getAbsolutePath();
             return imagefile;
         } catch (IOException e) {
             return null;
@@ -304,10 +309,10 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //TODO get photo
+        // get photo
         if (requestCode == TAKE_PICTURE && resultCode == RESULT_OK) {
             setImage();
-            scanSavedMediaFile(originalImagePath);
+            scanSavedMediaFile(processedImagePath);
         }
 
         // set the myImage equal to the camera image returned
@@ -340,7 +345,10 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         //save this for restoring
         bmpOriginal = BitMap_Helpers.copyBitmap(myImage.getDrawable());
 
-        //TODO make media scanner pick up that images are gone
+        // make media scanner pick up that images are gone
+        setImage();
+        scanSavedMediaFile(originalImagePath);
+        scanSavedMediaFile(processedImagePath);
 
     }
 
